@@ -1,0 +1,182 @@
+{
+  "name": "سلعة",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10Z0sCRc_5hvFIa5ANZMf285ysQkgFEV1Im1OhJHuUSw",
+          "mode": "list",
+          "cachedResultName": "ai sel3a",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10Z0sCRc_5hvFIa5ANZMf285ysQkgFEV1Im1OhJHuUSw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10Z0sCRc_5hvFIa5ANZMf285ysQkgFEV1Im1OhJHuUSw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        176,
+        -448
+      ],
+      "id": "b3333aa3-c179-441d-9498-dea569bb1e76",
+      "name": "Pull out the dressing table",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7pq168huwXjzajj3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -224
+      ],
+      "id": "b11d8e46-9383-4c44-afb4-aedf41eda386",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "i1DamyYqo2m5EqNF",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=أنت بائع محترف، ودود، وخبير في متجر ملابس. هدفك الأساسي هو مساعدة الزبون، الإجابة على استفساراته، وإقناعه بشراء المنتجات المتوفرة بأسلوب لبق، مختصر، وغير مزعج.\n\nتعليمات صارمة يجب الالتزام بها:\n1. لا تقترح أبداً أي منتج غير موجود في \"قائمة المخزن\" أدناه.\n2. إذا سأل الزبون عن منتج أو مقاس غير متوفر، اعتذر بلطف شديد واقترح عليه أقرب بديل من المخزن.\n3. اجعل ردودك واضحة، طبيعية، واستخدم الإيموجي (Emojis) المناسبة لجعل المحادثة لطيفة.\n4. اذكر السعر أو تفاصيل السلعة فقط إذا كانت موجودة في قائمة المخزن.\n\nقائمة المخزن (السلع المتوفرة لدينا الآن بالبيانات الدقيقة):\n{{ JSON.stringify($items(\"Pull out the dressing table\").map(item => item.json)) }}\n\nرسالة الزبون الحالية التي يجب أن ترد عليها:\n{{ $('recept').first().json.message.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        416,
+        -512
+      ],
+      "id": "899a139d-eda0-4269-93ee-ca0b23b8a113",
+      "name": "AI Agent",
+      "executeOnce": true,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "*"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -16,
+        -448
+      ],
+      "id": "9a567e7c-fc7e-477a-aedd-06a0b78aec94",
+      "name": "recept",
+      "webhookId": "a97dc3ee-b864-4175-b4fc-bc251aa8bf12",
+      "credentials": {
+        "telegramApi": {
+          "id": "CNQQyVHJg7K3LiMg",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('recept').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        -448
+      ],
+      "id": "384bfcd7-fcc1-49d3-8726-048595da7797",
+      "name": "²",
+      "webhookId": "f51a24fc-3c03-4bcd-8479-310a8259c468",
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "CNQQyVHJg7K3LiMg",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Pull out the dressing table": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "²",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "recept": {
+      "main": [
+        [
+          {
+            "node": "Pull out the dressing table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5d29db40-e30d-4be9-b4fa-719de2ffd7cf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3784929f0b6fb1eb401abfd7a8ecf9212925e603e74fb9a5cafaacec86afc027"
+  },
+  "id": "9FL1P9bgVf1NCLzs",
+  "tags": []
+}
