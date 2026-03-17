@@ -7,6 +7,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status](https://img.shields.io/badge/Status-Production_Ready-success)](https://github.com/Benbrika8)
 
+## 🖼️ Workflow Preview
+
+![Workflow Preview](workflow-preview.svg)
+
+
 ## 📋 Overview
 
 AI-powered Telegram sales bot that functions as an intelligent store assistant. Leverages LangChain AI Agent with Mistral Cloud LLM to deliver intelligent product recommendations, answer customer inquiries, and drive sales conversions through natural conversational AI.
